@@ -1,12 +1,13 @@
 #include "numbersysteminputvalidator.h"
-#include <QDebug>
+//#include <QDebug>
 #include <array>
 
+// Массив регулярных выражений для валидации текста для каждой из доступных систем счисления
 const std::array<QRegExp, 4> rxps = {
-    QRegExp{"[^0-1]"},
-    QRegExp{"[^0-7]"},
-    QRegExp{"[^0-9]"},
-    QRegExp{"[^0-9a-f]", Qt::CaseInsensitive}
+    QRegExp{"[^0-1]"},                          // Для 2-й системы счисления
+    QRegExp{"[^0-7]"},                          // Для 8-й системы счисления
+    QRegExp{"[^0-9]"},                          // Для 10-й системы счисления
+    QRegExp{"[^0-9a-f]", Qt::CaseInsensitive}   // Для 16-й системы счисления (не зависит от регистра)
 };
 
 
@@ -25,21 +26,21 @@ NumberSystemInputValidator* NumberSystemInputValidator::getValidator()
 
 void NumberSystemInputValidator::fixup(QString &input) const
 {
-    qDebug() << "fixup";
+ //   qDebug() << "fixup";
     input.replace(getRegExp(), "");
 }
 
 QValidator::State NumberSystemInputValidator::validate(QString &input, int &pos) const
 {
+    // Для того, чтобы не было предупреждения о неиспользуемой переменной
     Q_UNUSED(pos);
 
-    qDebug() << input;
+    // Если не содержит символов, не вошедших
+    // в регулярное выражение
     if(!input.contains(getRegExp()))
     {
-        qDebug() << "State::Acceptable";
         return State::Acceptable;
     }
-    qDebug() << "State::Invalid";
     return State::Invalid;
 }
 

@@ -7,6 +7,7 @@
 #include "starttest.h"
 #include "finishtest.h"
 
+// Макросы строк, описывающих текущий режим в приложении
 #define STR_MENU             "Меню"
 #define STR_MODE_LEARNING    "Режим обучения"
 #define STR_MODE_TRANSLATE   "Режим перевода"
@@ -28,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent):
 {
     ui->setupUi(this);
 
+    // Добавляем виджеты в стек виджетов
+    // (стек виджетов отображает только один из виджетов)
     ui->stackedWidget->addWidget(myMenuWidget);
     ui->stackedWidget->addWidget(modeLearningWidget);
     ui->stackedWidget->addWidget(modeTestingWidget);
@@ -45,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent):
     connect(startTest, &StartTest::signal_startTest, this, &MainWindow::slot_toModeTest);
     connect(finishTest, &FinishTest::signal_ok, this, &MainWindow::slot_toMenu);
 
+    // Открываем меню
     slot_toMenu();
 }
 
@@ -55,6 +59,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::slot_exit()
 {
+    // Завершение работы программы
     qApp->quit();
 }
 
@@ -63,8 +68,11 @@ void MainWindow::slot_toMenu()
     ui->modeLbl->setText(STR_MENU);
     ui->menuBtn->hide();
 
+    // Если slot_toMenu вызван из режима тестирования,
+    // то нужно завершить корректно режим тестирования
     if(countTasksRemained > 0)
     {
+        // Больше не обрабатываем сигнал о результате выполнения задания в режиме тестирования
         disconnect(modeTestingWidget, &ModeTestingWidget::signal_resultTest, this, &MainWindow::slot_resultOfOneTest);
         countTasksRemained = 0;
     }
@@ -109,6 +117,7 @@ void MainWindow::slot_toModeTest(int countTasks)
     countTasksRemained = countTasks;
     countRightTasks = 0;
 
+    // Начинаем обработку сигнала, сообщающего о результате выполнения задания теста
     connect(modeTestingWidget, &ModeTestingWidget::signal_resultTest, this, &MainWindow::slot_resultOfOneTest);
     modeTestingWidget->preparePage();
     ui->stackedWidget->setCurrentWidget(modeTestingWidget);
@@ -116,15 +125,18 @@ void MainWindow::slot_toModeTest(int countTasks)
 
 void MainWindow::slot_resultOfOneTest(ResultTest resultTest)
 {
+    // Если задание решено правильно
     if(resultTest == ResultTest::Right)
     {
         ++countRightTasks;
     }
+    // Если все задачи были выполнены
     if(--countTasksRemained == 0)
     {
+        // Больше не обрабатываем сигнал о результате выполнения задания в режиме тестирования
         disconnect(modeTestingWidget, &ModeTestingWidget::signal_resultTest, this, &MainWindow::slot_resultOfOneTest);
         countTasksRemained = 0;
-        slot_finishTest();
+        slot_finishTest();  // Открываем окно завершения теста
     }
 }
 

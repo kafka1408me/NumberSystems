@@ -1,9 +1,10 @@
 #include "modetestingwidget.h"
 #include "ui_modetestingwidget.h"
 #include "functions.h"
-#include <QDebug>
+//#include <QDebug>
 #include "numbersysteminputvalidator.h"
 
+// Строковые значения цветов
 #define COLOR_NUMBER   "#2e5dd0"
 #define COLOR_FROM     "#e28e3c"
 #define COLOR_TO       "#519e28"
@@ -11,9 +12,12 @@
 #define COLOR_ERROR    "#ff4f0a"
 #define COLOR_WARNING  "#d27c00"
 
+// Макрос для добавления к строке цвета
 #define COLOR_STR(color, text) "<font color=\"" color "\">" text "</font>"
+// Макрос, делающий строку жирной
 #define COLOR_STR_BOLD(color, text) COLOR_STR(color, "<b>" text "</b>")
 
+// Строка-предупреждение, если пользователь нажал на "Далее", но не ввел ответ
 #define WARNING_SKIP_STR COLOR_STR(COLOR_WARNING, "Вы не ответили на вопрос. Нажмите далее для перехода к следующему заданию или напишите ответ.")
 
 ModeTestingWidget::ModeTestingWidget(QWidget *parent) :
@@ -21,6 +25,8 @@ ModeTestingWidget::ModeTestingWidget(QWidget *parent) :
     ui(new Ui::ModeTestingWidget),
     answer("")
 {
+    // Регистрируем перечисление, чтобы использовать его значения
+    // для передачи в сигналах
     qRegisterMetaType<ResultTest>("ResultTest");
 
     ui->setupUi(this);
@@ -32,8 +38,6 @@ ModeTestingWidget::ModeTestingWidget(QWidget *parent) :
     connect(ui->minNumSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &ModeTestingWidget::slot_minValueChanged);
     connect(ui->maxNumSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &ModeTestingWidget::slot_maxValueChanged);
     connect(ui->nextBtn, &QPushButton::clicked, this, &ModeTestingWidget::slot_nextTest);
-
-//    next();
 }
 
 ModeTestingWidget::~ModeTestingWidget()
@@ -44,11 +48,6 @@ ModeTestingWidget::~ModeTestingWidget()
 void ModeTestingWidget::preparePage()
 {
     next();
-}
-
-void ModeTestingWidget::slot_minValueChanged(int value)
-{
-    Q_UNUSED(value);
 }
 
 void ModeTestingWidget::slot_maxValueChanged(int value)
@@ -67,26 +66,28 @@ void ModeTestingWidget::slot_nextTest()
 
     bool isWarningSkip = resultStr == WARNING_SKIP_STR;
 
+    // Если поясняющая строка не установлена или установлена строка-предупреждение
     if(resultStr.isEmpty() || isWarningSkip)
     {
-        QString inputStr = ui->numberLineEdit->text();
+        QString inputStr = ui->numberLineEdit->text();  // Ответ пользователя
 
-        if(inputStr.isEmpty())
+        if(inputStr.isEmpty()) // Если пользователь ничего не ввел
         {
+            // Установлена строка-предупреждение
             if(isWarningSkip)
             {
-                next();
+                next();  // Генерируем новое задание
                 emit signal_resultTest(ResultTest::Skip);
                 return;
             }
             resultStr = WARNING_SKIP_STR;
         }
-        else if(inputStr == answer)
+        else if(inputStr == answer)  // Пользователь ввел правильный ответ
         {
             resultStr = COLOR_STR(COLOR_RIGHT, "Правильно! Нажмите \"Далее\" для продолжения.");
             emit signal_resultTest(ResultTest::Right);
         }
-        else
+        else  // Пользователь ввел неверный ответ
         {
             resultStr = COLOR_STR(COLOR_ERROR, "Ошибка! Верный ответ: %1. Нажмите \"Далее\" для продолжения.");
             resultStr = resultStr.arg(answer);
@@ -95,7 +96,7 @@ void ModeTestingWidget::slot_nextTest()
 
         ui->resultLbl->setText(resultStr);
     }
-    else
+    else  // Установлена поясняющая строка, но не строка-предупреждение
     {
         next();
     }
@@ -119,7 +120,7 @@ void ModeTestingWidget::next()
 
     ui->resultLbl->clear();
 
-    qDebug() << val << " " << valueOfNumberSystem(fromNumberSystem) << " " << valueOfNumberSystem(toNumberSystem) << " " << answer;
+ //   qDebug() << val << " " << valueOfNumberSystem(fromNumberSystem) << " " << valueOfNumberSystem(toNumberSystem) << " " << answer;
 }
 
 void ModeTestingWidget::setTaskText(unsigned value, NumberSystem fromNumberSystem, NumberSystem toNumberSystem)

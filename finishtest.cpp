@@ -7,6 +7,7 @@ FinishTest::FinishTest(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Соединяем сигнал клика от кнопки со слотом-обработчиком
     connect(ui->okBtn, &QPushButton::clicked, this, &FinishTest::slot_ok);
 }
 
@@ -17,7 +18,7 @@ FinishTest::~FinishTest()
 
 void FinishTest::setValues(int countTasks, int countRight)
 {
-    int countErrors = countTasks - countRight;
+    int countErrors = countTasks - countRight;  // Количество ошибок
     ui->countTasksLbl->setText(QString::number(countTasks));
     ui->rightLbl->setText(QString::number(countRight));
     ui->errorsLbl->setText(QString::number(countErrors));

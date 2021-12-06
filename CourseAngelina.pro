@@ -19,8 +19,7 @@ SOURCES += \
     modetranslatewidget.cpp \
     numbersysteminputvalidator.cpp \
     preparerpage.cpp \
-    starttest.cpp \
-    window.cpp
+    starttest.cpp
 
 HEADERS += \
     NumberParameters.h \
@@ -33,8 +32,7 @@ HEADERS += \
     modetranslatewidget.h \
     numbersysteminputvalidator.h \
     preparerpage.h \
-    starttest.h \
-    window.h
+    starttest.h
 
 FORMS += \
     finishtest.ui \
