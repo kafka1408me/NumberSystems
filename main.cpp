@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     ModeLearning w;
     w.show();
 
-//    QTimer::singleShot(200, [&](){ w.drawTranslateAlgorithm("10", NumberSystem::Eight, NumberSystem::Ten);});;
+ //   QTimer::singleShot(200, [&](){ w.drawTranslateAlgorithm("123", NumberSystem::Ten, NumberSystem::Two);});;
     qDebug() << translateNumber("3", NumberSystem::Two, NumberSystem::Ten);
 
     return a.exec();

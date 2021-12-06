@@ -22,6 +22,9 @@ ModeLearning::ModeLearning(QWidget *parent) :
     ui->numberLineEdit->setValidator(MyValidator);
 
     init();
+
+    connect(ui->translateBtn, &QPushButton::clicked, this, &ModeLearning::slot_translate);
+    connect(ui->numberSystemFromCmbx, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ModeLearning::slot_fromNumberSystemChanged);
 }
 
 ModeLearning::~ModeLearning()
@@ -244,6 +247,20 @@ void ModeLearning::drawTranslateAlgorithm(QString valStr, NumberSystem numberSys
 
     painter.end();
 
-    ui->label_2->setPixmap(QPixmap::fromImage(image));
+    ui->algorithmLbl->setPixmap(QPixmap::fromImage(image));
+}
+
+void ModeLearning::slot_translate()
+{
+    NumberSystem from = NumberSystem(ui->numberSystemFromCmbx->currentIndex());
+    NumberSystem to = NumberSystem(ui->numberSystemToCmbx->currentIndex());
+    QString valueStr = ui->numberLineEdit->text();
+
+    drawTranslateAlgorithm(std::move(valueStr), from, to);
+}
+
+void ModeLearning::slot_fromNumberSystemChanged(int index)
+{
+    fixInput(NumberSystem(index));
 }
 

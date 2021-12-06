@@ -10,10 +10,7 @@ ModeTranslateWidget::ModeTranslateWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->numberSystemFromCmbx->addItems(numberSystems);
-    ui->numberSystemToCmbx->addItems(numberSystems);
-
-    setNumberSystems();
+    init();
 
     ui->numberLineEdit->setValidator(MyValidator);
 
@@ -40,20 +37,6 @@ void ModeTranslateWidget::slot_translate()
 
 void ModeTranslateWidget::slot_currentIndexFromChanged(int index)
 {
-    MyValidator->setNumberSystem(NumberSystem(index));
-    QString str = ui->numberLineEdit->text();
-    int pos = 0;
-    QValidator::State state = MyValidator->validate(str, pos);
-
-    if(state == QValidator::State::Invalid)
-    {
-        MyValidator->fixup(str);
-        ui->numberLineEdit->setText(str);
-    }
+    fixInput(NumberSystem(index));
 }
 
-void ModeTranslateWidget::setNumberSystems(NumberSystem from, NumberSystem to)
-{
-    ui->numberSystemFromCmbx->setCurrentIndex(int(from));
-    ui->numberSystemToCmbx->setCurrentIndex(int(to));
-}

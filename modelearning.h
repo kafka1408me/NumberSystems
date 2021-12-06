@@ -19,6 +19,11 @@ public:
 
     void drawTranslateAlgorithm(QString valStr, NumberSystem numberSystemFrom, NumberSystem numberSystemTo);
 
+private slots:
+    void slot_translate();
+
+    void slot_fromNumberSystemChanged(int index);
+
 private:
     Ui::ModeLearning *ui;
 };
