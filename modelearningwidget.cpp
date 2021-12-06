@@ -1,21 +1,83 @@
-#include "modelearning.h"
-#include "ui_modelearning.h"
+#include "modelearningwidget.h"
+#include "ui_modelearningwidget.h"
 #include <QPainter>
 #include <QPicture>
 #include <QDebug>
 #include <cmath>
 #include "numbersysteminputvalidator.h"
+#include <unordered_map>
+#include <algorithm>
 
 
 #define COLOR_ORDINARY_TEXT      "#474d47"
 #define COLOR_HIGHLIGHTED_TEXT   "red"
+#define COLOR_EXPLANATION        "#0660e7"
 
 #define ARROW_PLUS_X 10
 #define ARROW_CHANGE_Y 5
 
-ModeLearning::ModeLearning(QWidget *parent) :
+using MapForTranslate = std::unordered_map<QString, QString>;
+
+MapForTranslate mapTranslateFrom8To2;
+MapForTranslate mapTranslateFrom2To8;
+MapForTranslate mapTranslateFrom16To2;
+MapForTranslate mapTranslateFrom2To16;
+
+void initMapsForTranslate()
+{
+    QVector<std::pair<QString, QString>> initCont = {
+        {"0", "000"},
+        {"1", "001"},
+        {"2", "010"},
+        {"3", "011"},
+        {"4", "100"},
+        {"5", "101"},
+        {"6", "110"},
+        {"7", "111"}
+    };
+
+
+    for(auto& el: initCont)
+    {
+        mapTranslateFrom8To2.insert(el);
+        std::swap(el.first, el.second);
+        mapTranslateFrom2To8.insert(el);
+    }
+
+    initCont = {
+        {"0", "0000"},
+        {"1", "0001"},
+        {"2", "0010"},
+        {"3", "0011"},
+        {"4", "0100"},
+        {"5", "0101"},
+        {"6", "0110"},
+        {"7", "0111"},
+        {"8", "1000"},
+        {"9", "1001"},
+        {"a", "1010"},
+        {"b", "1011"},
+        {"c", "1100"},
+        {"d", "1101"},
+        {"e", "1110"},
+        {"f", "1111"}
+    };
+
+    for(auto& el: initCont)
+    {
+        mapTranslateFrom16To2.insert(el);
+        std::swap(el.first, el.second);
+        mapTranslateFrom2To16.insert(el);
+    }
+}
+
+
+
+
+
+ModeLearningWidget::ModeLearningWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ModeLearning)
+    ui(new Ui::ModeLearningWidget)
 {
     ui->setupUi(this);
 
@@ -23,17 +85,24 @@ ModeLearning::ModeLearning(QWidget *parent) :
 
     init();
 
-    connect(ui->translateBtn, &QPushButton::clicked, this, &ModeLearning::slot_translate);
-    connect(ui->numberSystemFromCmbx, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ModeLearning::slot_fromNumberSystemChanged);
+    initMapsForTranslate();
+
+    connect(ui->translateBtn, &QPushButton::clicked, this, &ModeLearningWidget::slot_translate);
+    connect(ui->numberSystemFromCmbx, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ModeLearningWidget::slot_fromNumberSystemChanged);
 }
 
-ModeLearning::~ModeLearning()
+ModeLearningWidget::~ModeLearningWidget()
 {
     delete ui;
 }
 
-void ModeLearning::drawTranslateAlgorithm(QString valStr, NumberSystem numberSystemFrom, NumberSystem numberSystemTo)
+void ModeLearningWidget::drawTranslateAlgorithm(QString valStr, NumberSystem numberSystemFrom, NumberSystem numberSystemTo)
 {
+    if(numberSystemFrom == NumberSystem::Sixteen)
+    {
+        valStr = valStr.toLower();
+    }
+
     QString startVal = valStr;
     const QString answer = translateNumber(valStr, numberSystemFrom, numberSystemTo);
     const int from = valueOfNumberSystem(numberSystemFrom);
@@ -43,7 +112,7 @@ void ModeLearning::drawTranslateAlgorithm(QString valStr, NumberSystem numberSys
 
     QImage image(QSize(1000, 1000), QImage::Format_ARGB32);
 
-    QPainter painter;
+    static QPainter painter;
     QPainter painterSmall;
     QFont font("Courier", 14);
     QFont fontSmall("Courier", 8);
@@ -58,7 +127,7 @@ void ModeLearning::drawTranslateAlgorithm(QString valStr, NumberSystem numberSys
     painter.setPen(ordinaryColor);
     painter.setRenderHint(QPainter::Antialiasing, true);
 
-    int answerY = 0;
+    int answerY = fm.height();
     int answerX = 15;
 
     auto paintBase = [&](const QString& baseStr, int& otstupX, int y)
@@ -68,6 +137,81 @@ void ModeLearning::drawTranslateAlgorithm(QString valStr, NumberSystem numberSys
         painter.drawText(otstupX, numberSystemTextY, baseStr);
         painter.setFont(font);
         otstupX += fmSmall.horizontalAdvance(baseStr);
+    };
+
+    auto paintTranslatingTo2 = [&](int textX, int textY, const QString& answer, const QString& baseAnswer, const QString& val)
+    {
+        painter.drawText(textX, textY, startVal);
+        textX += fm.horizontalAdvance(startVal);
+        paintBase(fromStr, textX, textY);
+
+        QString s = " = ";
+        painter.drawText(textX, textY, s);
+
+        textX += fm.horizontalAdvance(s);
+
+        int i = 0;
+        int countNum = val.size();
+
+        s = "";
+
+        MapForTranslate& mapToTranslateTo2 = (from == 8? mapTranslateFrom8To2 : mapTranslateFrom16To2);
+
+        while(i != countNum)
+        {
+            s += mapToTranslateTo2[val.at(i++)] + " ";
+        }
+
+        painter.drawText(textX, textY, s);
+        textX += fm.horizontalAdvance(s);
+
+        s = "= " + answer;
+        painter.drawText(textX, textY, s);
+        textX += fm.horizontalAdvance(s);
+
+        paintBase(baseAnswer, textX, textY);
+
+        return translateNumber(val, numberSystemFrom, NumberSystem::Two);
+    };
+
+    auto paintTranslateFrom2 = [&](int textX, int textY){
+        painter.drawText(textX, textY, valStr);
+        textX += fm.horizontalAdvance(valStr);
+        QString numberSystem2Str =  QString::number(2);
+        paintBase(numberSystem2Str, textX, textY);
+
+        QString s = "";
+
+        int countDigitsForTranslate = log2(to);
+        int count = valStr.size() / countDigitsForTranslate;
+        int leftOst = valStr.size() % countDigitsForTranslate;
+
+        qDebug() << "count = " << count << " ; leftOst = " << leftOst;
+
+        MapForTranslate& mapTranslate = (from == 8 || (from == 2 && to == 16))? mapTranslateFrom2To16 : mapTranslateFrom2To8;
+
+        QString s2 = "";
+        QString tmp;
+        while (count--)
+        {
+            tmp = valStr.right(countDigitsForTranslate);
+            s = tmp + " " + s;
+            s2 = mapTranslate[tmp] + " " + s2;
+        }
+
+        if(leftOst)
+        {
+            tmp = valStr.left(leftOst);
+            tmp.insert(0, QString(countDigitsForTranslate - leftOst, '0'));
+            s = tmp + " " + s;
+            s2 = mapTranslate[tmp] + " " + s2;
+        }
+
+        s = " = " + s + "= " + s2 + "= " + answer;
+        painter.drawText(textX, textY, s);
+        textX += fm.horizontalAdvance(s);
+
+        paintBase(toStr, textX, textY);
     };
 
     if(numberSystemFrom != numberSystemTo)
@@ -81,7 +225,6 @@ void ModeLearning::drawTranslateAlgorithm(QString valStr, NumberSystem numberSys
             int minusWidth = fm.horizontalAdvance(minus);
 
             int divisiblePosX = answerX;
-            //     answerX = divisiblePosX;
             int divisiblePosY = fm.height() + 1;
 
             while(true)
@@ -228,6 +371,50 @@ void ModeLearning::drawTranslateAlgorithm(QString valStr, NumberSystem numberSys
             answerY = textY + fm.height()*2;
 
         }
+        else if(numberSystemTo == NumberSystem::Two)
+        {
+            int textX = answerX;
+            int textY = fm.height() * 1.8;
+
+            paintTranslatingTo2(textX, textY, answer, toStr, valStr);
+
+            answerY = textY + fm.height() * 2;
+        }
+        else if(numberSystemFrom == NumberSystem::Two)
+        {
+            int textX = answerX;
+            int textY = fm.height() * 1.8;
+            paintTranslateFrom2(textX, textY);
+            answerY = textY + fm.height() * 2;
+        }
+        else
+        {
+            int textX = answerX;
+            int textY = fm.height() * 1.8;
+
+            QColor colorExplanation(COLOR_EXPLANATION);
+
+            auto paintExplanation = [&](const QString& explanationStr)
+            {
+                painter.setPen(colorExplanation);
+                painter.drawText(textX, textY, explanationStr);
+                textY += fm.height() * 1.3;
+                painter.setPen(ordinaryColor);
+            };
+
+            paintExplanation("Сначала переводим в 2-ичную систему:");
+
+            QString answer2 = translateNumber(valStr, numberSystemFrom, NumberSystem::Two);
+            QString numberSystem2Str =  QString::number(2);
+            valStr = paintTranslatingTo2(textX, textY, answer2, numberSystem2Str, valStr);
+            textY += fm.height() * 1.5;
+
+            paintExplanation(QString("Теперь переводим в %1-ичную систему:").arg(toStr));
+
+            paintTranslateFrom2(textX, textY);
+
+            answerY = textY + fm.height() * 2;
+        }
     }
 
     painter.setPen(highlightedColor);
@@ -250,16 +437,21 @@ void ModeLearning::drawTranslateAlgorithm(QString valStr, NumberSystem numberSys
     ui->algorithmLbl->setPixmap(QPixmap::fromImage(image));
 }
 
-void ModeLearning::slot_translate()
+void ModeLearningWidget::slot_translate()
 {
     NumberSystem from = NumberSystem(ui->numberSystemFromCmbx->currentIndex());
     NumberSystem to = NumberSystem(ui->numberSystemToCmbx->currentIndex());
     QString valueStr = ui->numberLineEdit->text();
 
+    if(valueStr.isEmpty())
+    {
+        valueStr = "0";
+    }
+
     drawTranslateAlgorithm(std::move(valueStr), from, to);
 }
 
-void ModeLearning::slot_fromNumberSystemChanged(int index)
+void ModeLearningWidget::slot_fromNumberSystemChanged(int index)
 {
     fixInput(NumberSystem(index));
 }

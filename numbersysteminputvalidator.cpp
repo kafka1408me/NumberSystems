@@ -2,11 +2,6 @@
 #include <QDebug>
 #include <array>
 
-//const QRegExp rxp2{"[^0-1]$"};
-//const QRegExp rxp8{"[^0-7]$"};
-//const QRegExp rxp10{"[^0-9]$"};
-//const QRegExp rxp16{"[^0-9a-f]$", Qt::CaseInsensitive};
-
 const std::array<QRegExp, 4> rxps = {
     QRegExp{"[^0-1]"},
     QRegExp{"[^0-7]"},
@@ -31,7 +26,7 @@ NumberSystemInputValidator* NumberSystemInputValidator::getValidator()
 void NumberSystemInputValidator::fixup(QString &input) const
 {
     qDebug() << "fixup";
-    input.replace(getRegExp(), QStringLiteral(""));
+    input.replace(getRegExp(), "");
 }
 
 QValidator::State NumberSystemInputValidator::validate(QString &input, int &pos) const

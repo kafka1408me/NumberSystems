@@ -5,17 +5,17 @@
 #include "modetranslatewidget.h"
 #include "modetestingwidget.h"
 #include "functions.h"
-#include "modelearning.h"
+#include "modelearningwidget.h"
 #include <QTimer>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    ModeLearning w;
+    MainWindow w;
     w.show();
 
- //   QTimer::singleShot(200, [&](){ w.drawTranslateAlgorithm("123", NumberSystem::Ten, NumberSystem::Two);});;
+//    QTimer::singleShot(200, [&](){ w.drawTranslateAlgorithm("10", NumberSystem::Eight, NumberSystem::Sixteen);});;
     qDebug() << translateNumber("3", NumberSystem::Two, NumberSystem::Ten);
 
     return a.exec();

@@ -12,27 +12,28 @@ SOURCES += \
     functions.cpp \
     main.cpp \
     mainwindow.cpp \
-    modelearning.cpp \
+    menuwidget.cpp \
+    modelearningwidget.cpp \
     modetestingwidget.cpp \
     modetranslatewidget.cpp \
     numbersysteminputvalidator.cpp \
-    translatealgorithmwgt.cpp \
     window.cpp
 
 HEADERS += \
     NumberParameters.h \
     functions.h \
     mainwindow.h \
-    modelearning.h \
+    menuwidget.h \
+    modelearningwidget.h \
     modetestingwidget.h \
     modetranslatewidget.h \
     numbersysteminputvalidator.h \
-    translatealgorithmwgt.h \
     window.h
 
 FORMS += \
     mainwindow.ui \
-    modelearning.ui \
+    menuwidget.ui \
+    modelearningwidget.ui \
     modetestingwidget.ui \
     modetranslatewidget.ui
 

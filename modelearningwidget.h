@@ -4,18 +4,18 @@
 #include "NumberParameters.h"
 
 namespace Ui {
-class ModeLearning;
+class ModeLearningWidget;
 }
 
 
-class ModeLearning : public QWidget, public NumberParameters<ModeLearning>
+class ModeLearningWidget : public QWidget, public NumberParameters<ModeLearningWidget>
 {
     Q_OBJECT
 private:
-    friend class NumberParameters<ModeLearning>;
+    friend class NumberParameters<ModeLearningWidget>;
 public:
-    explicit ModeLearning(QWidget *parent = nullptr);
-    ~ModeLearning();
+    explicit ModeLearningWidget(QWidget *parent = nullptr);
+    ~ModeLearningWidget();
 
     void drawTranslateAlgorithm(QString valStr, NumberSystem numberSystemFrom, NumberSystem numberSystemTo);
 
@@ -25,7 +25,7 @@ private slots:
     void slot_fromNumberSystemChanged(int index);
 
 private:
-    Ui::ModeLearning *ui;
+    Ui::ModeLearningWidget *ui;
 };
 
 
