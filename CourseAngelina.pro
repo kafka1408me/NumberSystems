@@ -20,6 +20,7 @@ SOURCES += \
     window.cpp
 
 HEADERS += \
+    NumberParameters.h \
     functions.h \
     mainwindow.h \
     modelearning.h \
