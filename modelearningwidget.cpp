@@ -8,7 +8,6 @@
 #include <unordered_map>
 #include <algorithm>
 
-
 #define COLOR_ORDINARY_TEXT      "#474d47"
 #define COLOR_HIGHLIGHTED_TEXT   "red"
 #define COLOR_EXPLANATION        "#0660e7"
@@ -70,9 +69,6 @@ void initMapsForTranslate()
         mapTranslateFrom2To16.insert(el);
     }
 }
-
-
-
 
 
 ModeLearningWidget::ModeLearningWidget(QWidget *parent) :
@@ -435,6 +431,11 @@ void ModeLearningWidget::drawTranslateAlgorithm(QString valStr, NumberSystem num
     painter.end();
 
     ui->algorithmLbl->setPixmap(QPixmap::fromImage(image));
+}
+
+void ModeLearningWidget::preparePage()
+{
+    setCurrentValidator();
 }
 
 void ModeLearningWidget::slot_translate()

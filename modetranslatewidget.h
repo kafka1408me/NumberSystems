@@ -2,12 +2,13 @@
 
 #include <QWidget>
 #include "NumberParameters.h"
+#include "preparerpage.h"
 
 namespace Ui {
 class ModeTranslateWidget;
 }
 
-class ModeTranslateWidget : public QWidget, NumberParameters<ModeTranslateWidget>
+class ModeTranslateWidget : public QWidget, public NumberParameters<ModeTranslateWidget>, public PreparerPage
 {
     Q_OBJECT
 private:
@@ -16,6 +17,8 @@ public:
     explicit ModeTranslateWidget(QWidget *parent = nullptr);
 
     ~ModeTranslateWidget();
+
+    void preparePage() override;
 
 private slots:
     void slot_translate();

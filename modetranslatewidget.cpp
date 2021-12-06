@@ -15,14 +15,17 @@ ModeTranslateWidget::ModeTranslateWidget(QWidget *parent) :
     ui->numberLineEdit->setValidator(MyValidator);
 
     connect(ui->translateBtn, &QPushButton::clicked, this, &ModeTranslateWidget::slot_translate);
- //   connect(ui->numberSystemFromCmbx, SIGNAL(currentIndexChanged(int)), this, SLOT(slot_currentIndexFromChanged(int)));
-
     connect(ui->numberSystemFromCmbx, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ModeTranslateWidget::slot_currentIndexFromChanged);
 }
 
 ModeTranslateWidget::~ModeTranslateWidget()
 {
     delete ui;
+}
+
+void ModeTranslateWidget::preparePage()
+{
+    setCurrentValidator();
 }
 
 void ModeTranslateWidget::slot_translate()

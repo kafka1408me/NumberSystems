@@ -41,5 +41,12 @@ public:
             super->ui->numberLineEdit->setText(str);
         }
     }
+
+    void setCurrentValidator()
+    {
+        T* super = static_cast<T*>(this);
+        NumberSystem numberSystem = NumberSystem(super->ui->numberSystemFromCmbx->currentIndex());
+        MyValidator->setNumberSystem(numberSystem);
+    }
 };
 

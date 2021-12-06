@@ -33,12 +33,17 @@ ModeTestingWidget::ModeTestingWidget(QWidget *parent) :
     connect(ui->maxNumSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &ModeTestingWidget::slot_maxValueChanged);
     connect(ui->nextBtn, &QPushButton::clicked, this, &ModeTestingWidget::slot_nextTest);
 
-    next();
+//    next();
 }
 
 ModeTestingWidget::~ModeTestingWidget()
 {
     delete ui;
+}
+
+void ModeTestingWidget::preparePage()
+{
+    next();
 }
 
 void ModeTestingWidget::slot_minValueChanged(int value)
