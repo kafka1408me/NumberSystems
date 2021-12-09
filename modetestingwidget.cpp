@@ -35,7 +35,6 @@ ModeTestingWidget::ModeTestingWidget(QWidget *parent) :
 
     ui->numberLineEdit->setValidator(MyValidator);
 
-    connect(ui->minNumSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &ModeTestingWidget::slot_minValueChanged);
     connect(ui->maxNumSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &ModeTestingWidget::slot_maxValueChanged);
     connect(ui->nextBtn, &QPushButton::clicked, this, &ModeTestingWidget::slot_nextTest);
 }
