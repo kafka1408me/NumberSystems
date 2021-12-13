@@ -1,7 +1,15 @@
 #pragma once
 
+/*************************************************
+ *
+ * NameValidator - класс для валидации вводимых
+ * пользователем имени и фамилии
+ *
+ *************************************************/
+
 #include <QValidator>
 
+// Минимальная длина имени (и фамилии)
 constexpr int minLengthName = 2;
 
 class NameValidator: public QValidator

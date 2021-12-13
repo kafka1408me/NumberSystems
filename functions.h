@@ -4,9 +4,11 @@
 // используемые другими модулями
 
 #include <QStringList>  // QStringList - список строк
-#include <chrono>
+#include <chrono>       // Для работы со временем (стандартная библиотека С++)
 
+// Тип часов
 using ClockType = std::chrono::system_clock;
+// Тип временной точки
 using TimePoint = std::chrono::time_point<ClockType>;
 
 /**
@@ -67,10 +69,32 @@ NumberSystem generateRandomNumberSystem(int without = -1);
  */
 int getCountDigits(int val);
 
+/**
+ * @brief addColorToString - функция для добавления цвета тексту
+ * с помощью тега html
+ * @param color - цвет
+ * @param text - текст, к которому нужно добавить цвет
+ * @return текст со цветом
+ */
 QString addColorToString(const QString& color,const QString &text);
 
+/**
+ * @brief getTimeStrFromSec - функция для конвертации количества секунд в строку времени
+ * @param sec - кол-во секунд
+ * @return строку времени
+ */
 QString getTimeStrFromSec(quint64 sec);
 
+/**
+ * @brief getCurrentTime - функция для получения текущего времени
+ * @return текущее время
+ */
 TimePoint getCurrentTime();
 
+/**
+ * @brief getDiffTime - функция для нахождения разницы между
+ * текущем временем и временем, переданным в качестве аргумента
+ * @param oldTime
+ * @return
+ */
 quint64 getDiffTime(const TimePoint& oldTime);

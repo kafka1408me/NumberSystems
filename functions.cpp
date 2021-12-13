@@ -83,6 +83,8 @@ quint64 getDiffTime(const TimePoint &oldTime)
     using namespace std;
     using namespace chrono;
 
+    // Находим разницу
     ClockType::duration diff(ClockType::now() - oldTime);
+    // Конвертируем в секунды
     return duration_cast<seconds>(diff).count();
 }

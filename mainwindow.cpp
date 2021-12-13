@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent):
     connect(startTest, &StartTest::signal_startTest, this, &MainWindow::slot_toModeTest);
     connect(finishTest, &FinishTest::signal_ok, this, &MainWindow::slot_toMenu);
 
+    // Соединяем сигнал завершения приложения со слотом сохранения времени сессии пользователя
     connect(qApp, &QCoreApplication::aboutToQuit, this, &MainWindow::slot_saveUserTime);
 
     setWindowTitle("Системы счисления");
@@ -179,8 +180,11 @@ void MainWindow::slot_resultOfOneTest(ResultTest resultTest)
 void MainWindow::slot_finishTest()
 {
     finishTest->setValues(countTasks, countRightTasks);
+    // Сохраняем в файл информацию о завершенных заданиях
     FileHandler::addTests(userId, countTasks, countRightTasks);
+    // Получаем время выполнения теста
     auto timeTestSec = modeTestingWidget->getTestTimeSec();
+    // Устанавливаем время в виджет завершения теста
     finishTest->setTime(timeTestSec);
     ui->stackedWidget->setCurrentWidget(finishTest);
 }
@@ -195,6 +199,8 @@ void MainWindow::slot_toStatistics()
 
 void MainWindow::slot_saveUserTime()
 {
+    // Сохраняем время в том случае, когда виджет MainWindow
+    // виден (он не виден, когда виден виджет авторизации)
     if(this->isVisible())
     {
         quint64 sec = getDiffTime(startSessionTime);

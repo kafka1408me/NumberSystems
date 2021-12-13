@@ -1,5 +1,11 @@
 #pragma once
 
+/*************************************************
+ *
+ * AuthorizeWidget - класс виджета авторизации
+ *
+ *************************************************/
+
 #include <QWidget>
 #include "userdata.h"
 
@@ -15,12 +21,23 @@ public:
     ~AuthorizeWidget();
 
 signals:
+    /**
+     * @brief signal_authorize - сигнал об успешной авторизации
+     * @param userData - данные пользователя
+     */
     void signal_authorize(const UserData& userData);
 
 public slots:
+    /**
+     * @brief slot_show - слот, открывающий виджет
+     */
     void slot_show();
 
 private slots:
+    /**
+     * @brief slot_tryAuthorize - слот, вызываемый
+     * при нажатии на кнопку "Далее"
+     */
     void slot_tryAuthorize();
 
 private:

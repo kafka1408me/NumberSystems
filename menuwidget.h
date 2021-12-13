@@ -46,6 +46,10 @@ signals:
      */
     void signal_toModeSelfTest();
 
+    /**
+     * @brief signal_toStatistics - сигнал о том, что нужно перейти
+     * к просмотру статистики пользователей
+     */
     void signal_toStatistics();
 
 private:

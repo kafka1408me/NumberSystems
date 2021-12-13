@@ -12,7 +12,6 @@
 #include <QMainWindow>
 #include "modetestingwidget.h"  // для использовния ResultTest
 #include "userdata.h"
-#include <chrono>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -39,9 +38,18 @@ public:
     ~MainWindow();
 
 signals:
+    /**
+     * @brief signal_unlogin - сигнал, сообщающий о выходе
+     * пользователя из системы (вызывается при возвращении
+     * пользователя к окну авторизации)
+     */
     void signal_unlogin();
 
 public slots:
+    /**
+     * @brief slot_show - слот для открытия окна виджета
+     * @param userData - данные авторизовавшегося пользователя
+     */
     void slot_show(const UserData& userData);
 
 private slots:
@@ -94,8 +102,15 @@ private slots:
      */
     void slot_finishTest();
 
+    /**
+     * @brief slot_toStatistics - слот, открывающий таблицу статистики
+     */
     void slot_toStatistics();
 
+    /**
+     * @brief slot_saveUserTime - слот сохранения времени
+     * пользователя в текущей сессии
+     */
     void slot_saveUserTime();
 
 private:
@@ -107,10 +122,15 @@ private:
     StartTest* startTest;
     FinishTest* finishTest;
     StatisticsWidget* statisticsWidget;
-    int countTasks;         // Количество задач для тестирования
-    int countTasksRemained; // Осталось выполнить задач
-    int countRightTasks;    // КОличество правильно решенных задач
-    UserIdType userId;
-    TimePoint startSessionTime;
+    int countTasks;              // Количество задач для тестирования
+    int countTasksRemained;      // Осталось выполнить задач
+    int countRightTasks;         // Количество правильно решенных задач
+    UserIdType userId;           // Идентификатор авторизованного пользователя
+    TimePoint startSessionTime;  // Временная точка начала сессии пользователя
 };
+
+
+
+
+
 
