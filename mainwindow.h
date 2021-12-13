@@ -11,6 +11,8 @@
 
 #include <QMainWindow>
 #include "modetestingwidget.h"  // для использовния ResultTest
+#include "userdata.h"
+#include <chrono>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,6 +28,7 @@ class ModeLearningWidget;
 class ModeTranslateWidget;
 class StartTest;
 class FinishTest;
+class StatisticsWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -34,6 +37,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
 
     ~MainWindow();
+
+signals:
+    void signal_unlogin();
+
+public slots:
+    void slot_show(const UserData& userData);
 
 private slots:
     /**
@@ -85,6 +94,10 @@ private slots:
      */
     void slot_finishTest();
 
+    void slot_toStatistics();
+
+    void slot_saveUserTime();
+
 private:
     Ui::MainWindow *ui;
     MenuWidget* myMenuWidget;
@@ -93,8 +106,11 @@ private:
     ModeTranslateWidget* modeTranslateWidget;
     StartTest* startTest;
     FinishTest* finishTest;
+    StatisticsWidget* statisticsWidget;
     int countTasks;         // Количество задач для тестирования
     int countTasksRemained; // Осталось выполнить задач
     int countRightTasks;    // КОличество правильно решенных задач
+    UserIdType userId;
+    TimePoint startSessionTime;
 };
 

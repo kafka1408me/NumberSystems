@@ -23,6 +23,8 @@ public:
 
     ~FinishTest();
 
+    void setTime(quint64 sec);
+
     /**
      * @brief setValues - функция для установки информации в виджет
      * @param countTasks - количество заданий (всего)

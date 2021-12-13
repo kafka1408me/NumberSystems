@@ -19,11 +19,13 @@ SOURCES += \
     modelearningwidget.cpp \
     modetestingwidget.cpp \
     modetranslatewidget.cpp \
+    namevalidator.cpp \
     numbersysteminputvalidator.cpp \
     preparerpage.cpp \
     starttest.cpp \
     statisticswidget.cpp \
-    userdata.cpp
+    userdata.cpp \
+    usersmodel.cpp
 
 HEADERS += \
     NumberParameters.h \
@@ -36,11 +38,13 @@ HEADERS += \
     modelearningwidget.h \
     modetestingwidget.h \
     modetranslatewidget.h \
+    namevalidator.h \
     numbersysteminputvalidator.h \
     preparerpage.h \
     starttest.h \
     statisticswidget.h \
-    userdata.h
+    userdata.h \
+    usersmodel.h
 
 FORMS += \
     authorizewidget.ui \

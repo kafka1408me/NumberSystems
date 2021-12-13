@@ -1,5 +1,6 @@
 #include "finishtest.h"
 #include "ui_finishtest.h"
+#include "functions.h"
 
 FinishTest::FinishTest(QWidget *parent) :
     QWidget(parent),
@@ -14,6 +15,12 @@ FinishTest::FinishTest(QWidget *parent) :
 FinishTest::~FinishTest()
 {
     delete ui;
+}
+
+void FinishTest::setTime(quint64 sec)
+{
+    QString timeStr = getTimeStrFromSec(sec);
+    ui->timeLbl->setText(timeStr);
 }
 
 void FinishTest::setValues(int countTasks, int countRight)

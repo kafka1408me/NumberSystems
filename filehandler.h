@@ -13,7 +13,13 @@ public:
 
     static UserData authorizeUser(const QString& name, const QString& surname);
 
-    static void writeUserData(const UserData& userData);
+    static void addTime(UserIdType userId, UserTimeType sec);
+
+    static void addTests(UserIdType userId, UserTestType countTests, UserTestType countRightTests);
+
+private:
+    // не используется
+    // static void writeUserData(const UserData& userData);
 
 private:
     FileHandler();

@@ -13,6 +13,7 @@ MenuWidget::MenuWidget(QWidget *parent) :
     connect(ui->modeTranslateBtn, SIGNAL(clicked(bool)), this, SIGNAL(signal_toModeTranslate()));
     connect(ui->modeTestBtn, SIGNAL(clicked(bool)), this, SIGNAL(signal_toModeTest()));
     connect(ui->modeSelfTestBtn, SIGNAL(clicked(bool)), this, SIGNAL(signal_toModeSelfTest()));
+    connect(ui->showStatisticsBtn, SIGNAL(clicked(bool)), this, SIGNAL(signal_toStatistics()));
 }
 
 MenuWidget::~MenuWidget()

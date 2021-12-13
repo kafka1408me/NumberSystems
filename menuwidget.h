@@ -46,6 +46,8 @@ signals:
      */
     void signal_toModeSelfTest();
 
+    void signal_toStatistics();
+
 private:
     Ui::MenuWidget *ui;
 };

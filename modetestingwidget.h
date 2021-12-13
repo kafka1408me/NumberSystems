@@ -11,6 +11,16 @@
 #include "functions.h"
 #include "preparerpage.h"
 
+#ifndef COLOR_STR
+// Макрос для добавления к строке цвета
+#define COLOR_STR(color, text) "<font color=\"" color "\">" text "</font>"
+#endif
+
+#ifndef COLOR_STR_BOLD
+// Макрос, делающий строку жирной
+#define COLOR_STR_BOLD(color, text) COLOR_STR(color, "<b>" text "</b>")
+#endif
+
 
 namespace Ui {
 class ModeTestingWidget;
@@ -35,6 +45,8 @@ public:
     ~ModeTestingWidget();
 
     void preparePage() override;
+
+    quint64 getTestTimeSec() const;
 
 signals:
     /**
@@ -73,5 +85,6 @@ private:
 private:
     Ui::ModeTestingWidget *ui;
     QString answer;  // Ответ на задание
+    TimePoint timeTestStart;
 };
 

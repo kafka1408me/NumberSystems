@@ -6,8 +6,10 @@
 
 using namespace std;
 
-const char* usersFileName = "D:\\users.bin";
+const char* usersFileName = "users.bin";
 constexpr auto offsetUserData = sizeof (UserData) - sizeof (UserData::userId);
+constexpr long long offsetTime = offsetUserData - sizeof (UserData::secInApp);
+constexpr long long offsetTests = offsetTime - 2*sizeof (UserTestType);
 
 
 // Вычисление длины потока
@@ -22,6 +24,23 @@ std::streamoff stream_size(std::istream& f)
     std::istream::pos_type end_pos = f.tellg();
     f.seekg(current_pos);
     return end_pos - current_pos;
+}
+
+bool findUserInFile(std::istream& f, UserIdType id)
+{
+    const int countUsers =  stream_size(f) / sizeof (UserData);
+    UserIdType userId = 0;
+    for(int i = 0; i < countUsers; ++i)
+    {
+        f.read((char*)&userId, sizeof (UserIdType));
+
+        if(id == userId)
+        {
+            return true;
+        }
+        f.seekg(offsetUserData, ios::cur);
+    }
+    return false;
 }
 
 
@@ -52,23 +71,20 @@ UserData FileHandler::authorizeUser(const QString &name, const QString &surname)
     std::fstream f(usersFileName, ios::in | ios::out | ios::binary | ios::app);
     if(f)
     {
-        const int countUsers =  stream_size(f) / sizeof (UserData);
-        for(int i = 0; i < countUsers; ++i)
-        {
-            f.read((char*)&userData.userId, sizeof (userData.userId));
-
-            if(userData.userId == userId)
-            {
-                f.read((char*)&userData.userName, offsetUserData);
-                return userData;
-            }
-            f.seekg(offsetUserData, ios::cur);
-        }
         userData.userId = userId;
-        userData.setNameAndSurname(name, surname);
-        f.write((char*)&userData, sizeof (UserData));
+        bool result = findUserInFile(f, userId);
+        if(result)
+        {
+            f.read((char*)&userData.userName, offsetUserData);
+        }
+        else
+        {
+            userData.setNameAndSurname(name, surname);
+            f.write((char*)&userData, sizeof (UserData));
+        }
 
         f.close();
+        return userData;
     }
     else
     {
@@ -83,6 +99,7 @@ UserData FileHandler::authorizeUser(const QString &name, const QString &surname)
     return userData;
 }
 
+/*
 void FileHandler::writeUserData(const UserData &userData)
 {
     std::fstream f(usersFileName, ios::in | ios::out | ios::binary);
@@ -102,6 +119,52 @@ void FileHandler::writeUserData(const UserData &userData)
                 return;
             }
             f.seekg(offsetUserData, ios::cur);
+        }
+        f.close();
+    }
+}
+*/
+
+void FileHandler::addTime(UserIdType userId, UserTimeType sec)
+{
+    std::fstream f(usersFileName, ios::in | ios::out | ios::binary);
+    if(f)
+    {
+        bool result = findUserInFile(f, userId);
+        if(result)
+        {
+            UserTimeType curUserTime = 0;
+            f.seekg(offsetTime, ios::cur);
+            auto timePos = f.tellg();
+            f.read((char*)&curUserTime, sizeof (UserTimeType));
+
+            f.seekp(timePos, ios::beg);
+            curUserTime += sec;
+            f.write((char*)&curUserTime, sizeof (UserTimeType));
+        }
+
+        f.close();
+    }
+}
+
+void FileHandler::addTests(UserIdType userId, UserTestType countTests, UserTestType countRightTests)
+{
+    std::fstream f(usersFileName, ios::in | ios::out | ios::binary);
+    if(f)
+    {
+        bool result = findUserInFile(f, userId);
+        if(result)
+        {
+            UserTestType userTestsParams[2];
+            f.seekg(offsetTests, ios::cur);
+            auto posTests = f.tellg();
+            f.read((char*)userTestsParams, sizeof (userTestsParams));
+
+            userTestsParams[0] += countTests;
+            userTestsParams[1] += countRightTests;
+
+            f.seekp(posTests, ios::beg);
+            f.write((char*)userTestsParams, sizeof (userTestsParams));
         }
         f.close();
     }

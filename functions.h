@@ -4,6 +4,10 @@
 // используемые другими модулями
 
 #include <QStringList>  // QStringList - список строк
+#include <chrono>
+
+using ClockType = std::chrono::system_clock;
+using TimePoint = std::chrono::time_point<ClockType>;
 
 /**
  * @brief The NumberSystem enum - перечисление доступных систем счисления
@@ -63,7 +67,10 @@ NumberSystem generateRandomNumberSystem(int without = -1);
  */
 int getCountDigits(int val);
 
+QString addColorToString(const QString& color,const QString &text);
 
+QString getTimeStrFromSec(quint64 sec);
 
+TimePoint getCurrentTime();
 
-
+quint64 getDiffTime(const TimePoint& oldTime);

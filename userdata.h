@@ -5,6 +5,8 @@
 constexpr int maxNameLength = 20;
 
 using UserIdType = quint32;
+using UserTimeType = quint64;
+using UserTestType = quint32;
 
 struct UserData
 {
@@ -20,11 +22,15 @@ struct UserData
 
     void setNameAndSurname(const QString& name, const QString& surname);
 
+    QString getFullName() const;
+
     UserIdType userId;
     wchar_t userName[maxNameLength + 1];
     wchar_t userSurname[maxNameLength + 1];
-    quint32 countTests;
-    quint32 countRightTasks;
-    quint64 secInApp;
+    UserTestType countTests;
+    UserTestType countRightTasks;
+    UserTimeType secInApp;
 };
+
+using Users = QVector<UserData>;
 

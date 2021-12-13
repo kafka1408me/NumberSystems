@@ -13,3 +13,8 @@ void UserData::setNameAndSurname(const QString &name, const QString &surname)
     writeStringToArray(name, userName);
     writeStringToArray(surname, userSurname);
 }
+
+QString UserData::getFullName() const
+{
+    return QString::fromWCharArray(userName) + " " + QString::fromWCharArray(userSurname);
+}

@@ -12,10 +12,6 @@
 #define COLOR_ERROR    "#ff4f0a"
 #define COLOR_WARNING  "#d27c00"
 
-// Макрос для добавления к строке цвета
-#define COLOR_STR(color, text) "<font color=\"" color "\">" text "</font>"
-// Макрос, делающий строку жирной
-#define COLOR_STR_BOLD(color, text) COLOR_STR(color, "<b>" text "</b>")
 
 // Строка-предупреждение, если пользователь нажал на "Далее", но не ввел ответ
 #define WARNING_SKIP_STR COLOR_STR(COLOR_WARNING, "Вы не ответили на вопрос. Нажмите далее для перехода к следующему заданию или напишите ответ.")
@@ -46,7 +42,13 @@ ModeTestingWidget::~ModeTestingWidget()
 
 void ModeTestingWidget::preparePage()
 {
+    timeTestStart = getCurrentTime();
     next();
+}
+
+quint64 ModeTestingWidget::getTestTimeSec() const
+{
+    return getDiffTime(timeTestStart);
 }
 
 void ModeTestingWidget::slot_maxValueChanged(int value)
