@@ -136,7 +136,7 @@ void MainWindow::slot_toModeTranslate()
 void MainWindow::slot_toModeSelfTest()
 {
     ui->modeLbl->setText(STR_MODE_SELF_TEST);
-    ui->menuBtn->show();
+    ui->menuBtn->setText(menuText);
     modeTestingWidget->preparePage();
     ui->stackedWidget->setCurrentWidget(modeTestingWidget);
 }
